@@ -1,0 +1,16 @@
+proxy:
+  listen:
+    address: "127.0.0.0.1"
+    port: 8080
+  services:
+    - name: my-service
+      domain: my-service.my-company.com
+      hosts:
+        - address: 127.0.0.1
+          port: 8888
+        - address: 127.0.0.1
+          port: 9999
+      lbPolicy: ROUND_ROBIN
+      tcpHealthcheck:
+        - interval: 30
+          timeout: 100
