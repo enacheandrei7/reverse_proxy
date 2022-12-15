@@ -8,9 +8,16 @@ proxy:
       hosts:
         - address: 127.0.0.1
           port: 8888
+          retryPolicy:
+            - timeout: 5
+              retries: 5
         - address: 127.0.0.1
           port: 9999
-      lbPolicy: ROUND_ROBIN
+          retryPolicy:
+            - timeout: 5
+              retries: 5
+      lbPolicy: ROUND_
       tcpHealthcheck:
-        - interval: 30
-          timeout: 100
+        - interval: 15.0
+          timeout: 5.0
+
