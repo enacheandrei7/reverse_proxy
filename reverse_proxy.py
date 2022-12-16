@@ -96,12 +96,12 @@ class ReverseProxy(BaseHTTPRequestHandler):
     healthy_upstream_srv = []
     # dummy_healthy_srv_list = upstream_srv_list.copy()
     tcp_healthcheck(healthy_upstream_srv, services)
+    round_robin_server = cycle(upstream_srv_list)
+    load_balancer_type = services['lbPolicy']
 
     def __init__(self, *args):
         # self.test = self.healthy_upstream_srv  # this was ok, we can return to this
-        self.load_balancer_type = self.services['lbPolicy']
-        self.round_robin_server = cycle(self.healthy_upstream_srv)
-        self.sock = self.define_socket()
+        # self.sock = self.define_socket()
         BaseHTTPRequestHandler.__init__(self, *args)
 
     def do_GET(self):
@@ -112,15 +112,21 @@ class ReverseProxy(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(bytes("<p>Sorry, no servers available</p>", "utf-8"))
         else:
-            # self.round_robin_server = cycle(self.healthy_upstream_srv)
-            url = self.select_upstream_service_with_lb(self.load_balancer_type)
+            # url = self.select_upstream_service_with_lb(self.load_balancer_type)
+            curr_service = self.select_upstream_service_with_lb(self.load_balancer_type)
+            url = f"http://{curr_service['address']}:{curr_service['port']}"
 
-            print('THIS IS FROM GET: ', self.test)
+            # print('THIS IS FROM GET: ', self.healthy_upstream_srv)
+            print('THIS IS FROM GET: ', url)
 
             req_header = self.parse_headers()  # header from client
+
+            retry_policy = curr_service['retryPolicy'][0]
+            print('Retry pol: ', retry_policy)
             resp = requests.get(url,
                                 headers=req_header,
-                                verify=False)  # we pass the header from client to the upstream service and get the response
+                                verify=False,
+                                timeout=retry_policy['timeout'])  # we pass the header from client to the upstream service and get the response
 
             self.send_resp_from_upstream(resp)
 
@@ -160,22 +166,34 @@ class ReverseProxy(BaseHTTPRequestHandler):
             self.send_header("Content-length", '0')
         self.end_headers()
 
-    def round_robin(self, iterator):
+    @staticmethod
+    def round_robin(iterator):
         return next(iterator)
 
     def select_upstream_service_with_lb(self, lb_policy):
         if lb_policy == "ROUND_ROBIN":
             upstream_service = self.round_robin(self.round_robin_server)
-            url = f"http://{upstream_service['address']}:{upstream_service['port']}"
-            print('URL FROM LB: ', url)
-            return url
+            if upstream_service in self.healthy_upstream_srv:
+                # url = f"http://{upstream_service['address']}:{upstream_service['port']}"
+                # print('URL FROM LB: ', url)
+                return upstream_service
+            else:
+                while upstream_service not in self.healthy_upstream_srv:
+                    upstream_service = self.round_robin(self.round_robin_server)
+                    # url = f"http://{upstream_service['address']}:{upstream_service['port']}"
+                    # print('URL FROM LB: ', url)
+                return upstream_service
+            # return url
         else:
             num_available_srv = len(self.healthy_upstream_srv)
             upstream_service = self.healthy_upstream_srv[randrange(num_available_srv)]
-            url = f"http://{upstream_service['address']}:{upstream_service['port']}"
-            return url
+            print('UPSTREAM SRV: ', upstream_service)
+            return upstream_service
+            # url = f"http://{upstream_service['address']}:{upstream_service['port']}"
+            # return url
 
-    def define_socket(self):
+    @staticmethod
+    def define_socket():
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         return sock

@@ -16,8 +16,13 @@ proxy:
           retryPolicy:
             - timeout: 5
               retries: 5
+        - address: 127.0.0.1
+          port: 1111
+          retryPolicy:
+            - timeout: 5
+              retries: 5
       lbPolicy: ROUND_ROBIN
       tcpHealthcheck:
-        - interval: 30
+        - interval: 13.0
           timeout: 1.0
 

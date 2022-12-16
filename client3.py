@@ -1,30 +1,26 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import requests
-from urllib.parse import parse_qs
-import socket
 
 HOST = "127.0.0.1"
-PORT = 9999
+PORT = 1111
 ADDR = (HOST, PORT)
 
 
 class ReverseProxy(BaseHTTPRequestHandler):
-    server_version = "Client1/1.1"
+    server_version = "Client2/1.1"
 
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(bytes("<p>I am CLIENT 1</p>", "utf-8"))
+        self.wfile.write(bytes("<p>I am CLIENT 3</p>", "utf-8"))
         print(self.headers)
 
     def do_POST(self):
         self.send_response(200)
         self.send_header("Content-type", "application/json")
         self.end_headers()
-        self.wfile.write(bytes("<p>I am CLIENT wooow 1</p>", "utf-8"))
-        content_length = int(self.headers['Content-Length'])
-        post_body = self.rfile.read(content_length)
+        print(self.headers)
 
 
 
@@ -43,3 +39,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # resp = requests.get("http://127.0.0.1:8081", verify=False)
