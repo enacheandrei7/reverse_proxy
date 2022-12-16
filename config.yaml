@@ -16,8 +16,8 @@ proxy:
           retryPolicy:
             - timeout: 5
               retries: 5
-      lbPolicy: ROUND_
+      lbPolicy: ROUND_ROBIN
       tcpHealthcheck:
-        - interval: 15.0
-          timeout: 5.0
+        - interval: 30
+          timeout: 1.0
 
