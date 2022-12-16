@@ -1,0 +1,6 @@
+version: "3.8"
+services:
+  reverse-proxy:
+    build:
+  client-1:
+  client-2:

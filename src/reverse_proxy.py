@@ -7,8 +7,10 @@ import requests
 import yaml
 import threading
 
+# HOST_NAME = socket.gethostname()
+# HOST_IP = socket.gethostbyname(HOST_NAME)
 
-CONFIG_PATH = "./src/config.yaml"
+CONFIG_PATH = "./config.yaml"
 
 
 def read_yaml(config_path):
@@ -49,8 +51,8 @@ def tcp_healthcheck(healthy_upstr_srv, services):
     Returns:
         healthy_upstr_srv (list)
     """
-    healthcheck_params = services['tcpHealthcheck'][0]
-    upstream_services = services['hosts']
+    healthcheck_params = services['tcpHealthcheck'][0]  # interval, timeout
+    upstream_services = services['hosts']  # list of upstream services dictionaries
     unhealthy_upstr_srv = []
 
     for service in upstream_services:
@@ -111,14 +113,18 @@ class ReverseProxy(BaseHTTPRequestHandler):
 
     def do_GET(self):
         """
-        Get method for the reverse proxy. It triggers the GET method for the upstream servers, verifies if the host is the one specified in configuration, checks if the servers are running, then connect to one of the healthy servers using a load balancer that accepts ROUND_ROBIN or RANDOM configurations. 
+        Get method for the reverse proxy. It triggers the GET method for the upstream servers, verifies if the host is
+        the one specified in configuration, checks if the servers are running, then connect to one of the healthy
+        servers using a load balancer that accepts ROUND_ROBIN or RANDOM configurations.
         """
         if self.headers['host'] == self.services['domain']:
             if not self.healthy_upstream_srv:
+                resp = "<p>Sorry, no servers available</p>"
                 self.send_response(500)
                 self.send_header("Content-type", "text/html")
+                self.send_header("Content-length", str(len(resp)))
                 self.end_headers()
-                self.wfile.write(bytes("<p>Sorry, no servers available</p>", "utf-8"))
+                self.wfile.write(bytes(resp, "utf-8"))
             else:
                 curr_service = self.select_upstream_service_with_lb(self.load_balancer_type)
                 url = f"http://{curr_service['address']}:{curr_service['port']}"
@@ -135,24 +141,29 @@ class ReverseProxy(BaseHTTPRequestHandler):
                     response = s.get(url, headers=req_header, verify=False, timeout=retry_policy['timeout'])
                     self.send_resp_from_upstream(response)
                 except requests.exceptions.MissingSchema as err:
+                    resp = "<p>Problem with server</p>"
                     self.send_response(500)
                     self.send_header("Content-type", "text/html")
+                    self.send_header("Content-length", str(len(resp)))
                     self.end_headers()
-                    self.wfile.write(bytes("<p>Problem with server</p>", "utf-8"))
+                    self.wfile.write(bytes(resp, "utf-8"))
                 except requests.exceptions.ConnectionError as err:
                     print('Network or URL Problem: ' + str(err))
+                    resp = "<p>Problem with server</p>"
                     self.send_response(500)
                     self.send_header("Content-type", "text/html")
+                    self.send_header("Content-length", str(len(resp)))
                     self.end_headers()
-                    self.wfile.write(bytes("<p>Problem with server</p>", "utf-8"))
+                    self.wfile.write(bytes(resp, "utf-8"))
         else:
-                    self.send_response(401)
-                    self.send_header("Content-type", "text/html")
-                    self.end_headers()
-                    self.wfile.write(bytes("<p>You are not authorized. Host not 'my-service.my-company.com'</p>", "utf-8"))
+            resp = "<p>You are not authorized. Host not 'my-service.my-company.com'</p>"
+            self.send_response(401)
+            self.send_header("Content-type", "text/html")
+            self.send_header("Content-length", str(len(resp)))
+            self.end_headers()
+            self.wfile.write(bytes(resp, "utf-8"))
 
     # def do_POST(self):
-    #     url = f"{CLIENT3}/post"
     #     req_header = self.parse_headers()
     #     if self.headers['Content-length']:
     #         content_length = int(self.headers['content-length'])
@@ -160,7 +171,7 @@ class ReverseProxy(BaseHTTPRequestHandler):
     #     else:
     #         post_body = {}
     #     resp = requests.post(url, data=post_body, headers=req_header, verify=False)
-
+    #
     #     self.send_resp_from_upstream(resp)
 
     def parse_headers(self):
@@ -204,9 +215,9 @@ class ReverseProxy(BaseHTTPRequestHandler):
     @staticmethod
     def round_robin(iterator):
         """
-        generates the enxt value of the iretator created from the upstream servers.
+        Generates the enxt value of the iretator created from the upstream servers.
         Args:
-            iretarot (iterator): The iterator generated from the upstream servers
+            iterator (iterator): The iterator generated from the upstream servers
         """
         return next(iterator)
 
@@ -247,13 +258,13 @@ def main(handler_class=ReverseProxy):
     """
     config = read_yaml(CONFIG_PATH)
     host_details = config['proxy']['listen']
-    HOST_IP = host_details['address']
+    # HOST_IP = host_details['address']
     PORT = host_details['port']
-    
+    hostname = socket.gethostname()
+    HOST_IP = socket.gethostbyname(hostname)
     print('http server is starting on {}:{}...'.format(HOST_IP, PORT))
     web_server = ThreadingHTTPServer((HOST_IP, PORT), handler_class)
     print('http server is running as reverse proxy')
-
     try:
         web_server.serve_forever()
     except KeyboardInterrupt:

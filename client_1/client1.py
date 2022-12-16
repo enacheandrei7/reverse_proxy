@@ -3,7 +3,10 @@ import requests
 from urllib.parse import parse_qs
 import socket
 
-HOST = "127.0.0.1"
+hostname = socket.gethostname()
+HOST = socket.gethostbyname(hostname)
+
+# HOST = "127.0.0.1"
 PORT = 9999
 ADDR = (HOST, PORT)
 
