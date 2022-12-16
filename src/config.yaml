@@ -1,6 +1,6 @@
 proxy:
   listen:
-    address: "127.0.0.0.1"
+    address: "127.0.0.1"
     port: 8080
   services:
     - name: my-service
@@ -9,20 +9,20 @@ proxy:
         - address: 127.0.0.1
           port: 8888
           retryPolicy:
-            - timeout: 5
-              retries: 5
+            - timeout: 2
+              retries: 3
         - address: 127.0.0.1
           port: 9999
           retryPolicy:
-            - timeout: 5
-              retries: 5
+            - timeout: 2
+              retries: 3
         - address: 127.0.0.1
           port: 1111
           retryPolicy:
-            - timeout: 5
-              retries: 5
+            - timeout: 2
+              retries: 3
       lbPolicy: ROUND_ROBIN
       tcpHealthcheck:
-        - interval: 13.0
+        - interval: 15
           timeout: 1.0
 
