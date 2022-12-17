@@ -15,4 +15,15 @@ The reverse proxy redirects the client's request to one of the available upstrea
 * The reverse proxy will support HTTP 1.1
 * The reverse proxy should be configured using a YAML configuration file
 
+## To run the program:
 
+1. Clonse the repo:
+  `> git clone https://github.com/enacheandrei7/reverse_proxy.git`
+2. Enter the project:
+  `> cd reverse_proxy`
+3. **For simple utilisation:**
+  `> python ./src/reverse_proxy.py`
+  `> python ./client_1/client1.py`
+  `> python ./client_2/client2.py`
+  `> python ./client_3/client3.py`
+4. 
