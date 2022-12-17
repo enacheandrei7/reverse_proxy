@@ -14,6 +14,7 @@ The reverse proxy redirects the client's request to one of the available upstrea
 
 * The reverse proxy will support HTTP 1.1
 * The reverse proxy should be configured using a YAML configuration file
+* In order to be able to get any informations, the user must have the "Host" field in the header set to "my-service.my-company.com"
 
 ## To run the program:
 

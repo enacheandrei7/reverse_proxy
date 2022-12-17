@@ -2,5 +2,25 @@ version: "3.8"
 services:
   reverse-proxy:
     build:
+      context: .
+      dockerfile: Dockerfile_rev_proxy
+    ports:
+      - "81:8080"
   client-1:
+    build:
+      context: .
+      dockerfile: Dockerfile_client_1
+    ports:
+      - "9999:9999"
   client-2:
+    build:
+      context: .
+      dockerfile: Dockerfile_client_2
+    ports:
+      - "8888:8888"
+  client-3:
+    build:
+      context: .
+      dockerfile: Dockerfile_client_3
+    ports:
+      - "1111:1111"
