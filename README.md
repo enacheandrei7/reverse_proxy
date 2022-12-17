@@ -36,3 +36,7 @@ The reverse proxy redirects the client's request to one of the available upstrea
   - `> docker run -d -p 1111:1111 --name client1 client3`
   - `> docker build -t reverse_proxy -f Dockerfile_rev_proxy .`
   - `> docker run -d -p 81:8080 --name rev_proxy reverse_proxy`
+5. **Utilize with docker compose:**
+  - `> docker-compose build`
+  - `> docker-compose up -d`
+  - `**Enter the reverse proxy container via cli or container detach, then change the IPs in the config, then restart the container**`
