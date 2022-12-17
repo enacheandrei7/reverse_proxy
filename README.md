@@ -39,4 +39,4 @@ The reverse proxy redirects the client's request to one of the available upstrea
 5. **Utilize with docker compose:**
   - `> docker-compose build`
   - `> docker-compose up -d`
-  - `**Enter the reverse proxy container via cli or container detach, then change the IPs in the config, then restart the container**`
+  - `**Enter the reverse proxy container via cli or container attach, then change the IPs in the config, then restart the container**`
