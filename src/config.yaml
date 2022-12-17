@@ -1,22 +1,22 @@
 proxy:
   listen:
     address: "127.0.0.1"
-    port: 8081
+    port: 8080
   services:
     - name: my-service
       domain: my-service.my-company.com
       hosts:
-        - address: 127.0.0.1
+        - address: 172.17.0.3
           port: 8888
           retryPolicy:
             - timeout: 2
               retries: 3
-        - address: 127.0.0.1
+        - address: 172.17.0.2
           port: 9999
           retryPolicy:
             - timeout: 2
               retries: 3
-        - address: 127.0.0.1
+        - address: 172.17.0.4
           port: 1111
           retryPolicy:
             - timeout: 2

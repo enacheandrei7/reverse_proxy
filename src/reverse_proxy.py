@@ -10,7 +10,7 @@ import threading
 # HOST_NAME = socket.gethostname()
 # HOST_IP = socket.gethostbyname(HOST_NAME)
 
-CONFIG_PATH = "./config.yaml"
+CONFIG_PATH = "./src/config.yaml"
 
 
 def read_yaml(config_path):
