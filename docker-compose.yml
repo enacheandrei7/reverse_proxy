@@ -11,16 +11,16 @@ services:
       context: .
       dockerfile: Dockerfile_client_1
     ports:
-      - "9999:9999"
+      - "1111:9090"
   client-2:
     build:
       context: .
       dockerfile: Dockerfile_client_2
     ports:
-      - "8888:8888"
+      - "2222:9090"
   client-3:
     build:
       context: .
       dockerfile: Dockerfile_client_3
     ports:
-      - "1111:1111"
+      - "3333:9090"

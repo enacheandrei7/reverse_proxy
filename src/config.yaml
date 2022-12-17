@@ -7,17 +7,17 @@ proxy:
       domain: my-service.my-company.com
       hosts:
         - address: 172.17.0.3
-          port: 8888
+          port: 1111
           retryPolicy:
             - timeout: 2
               retries: 3
         - address: 172.17.0.2
-          port: 9999
+          port: 2222
           retryPolicy:
             - timeout: 2
               retries: 3
         - address: 172.17.0.4
-          port: 1111
+          port: 3333
           retryPolicy:
             - timeout: 2
               retries: 3

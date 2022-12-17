@@ -22,20 +22,21 @@ The reverse proxy redirects the client's request to one of the available upstrea
   `> git clone https://github.com/enacheandrei7/reverse_proxy.git`
 2. Enter the project:
   `> cd reverse_proxy`
-3. **For simple utilisation:**
+3. **For simple utilisation (CHANGE THE PORTS WHERE NEEDED):**
   - `> python ./src/reverse_proxy.py`
   - `> python ./client_1/client1.py`
   - `> python ./client_2/client2.py`
   - `> python ./client_3/client3.py`
-4. **Utilize with docker:**
+4. **Utilize with docker (CHANGE THE PORTS WHERE NEEDED):**
+  - `> docker network create --subnet=10.1.0.5/16 mynetwork`
   - `> docker build -t client1 -f Dockerfile_client_1 .`
-  - `> docker run -d -p 9999:9999 --name client1 client1`
+  - `> docker run --net mynetwork --ip 10.0.0.6 -d -p 1111:9090 --name client1 client1`
   - `> docker build -t client2 -f Dockerfile_client_2 .`
-  - `> docker run -d -p 8888:8888 --name client2 client2`
+  - `> docker run --net mynetwork --ip 10.0.0.7 -d -p 2222:9090 --name client2 client2`
   - `> docker build -t client3 -f Dockerfile_client_3 .`
-  - `> docker run -d -p 1111:1111 --name client1 client3`
+  - `> docker run --net mynetwork --ip 10.0.0.8 -d -p 3333:9090 --name client3 client3`
   - `> docker build -t reverse_proxy -f Dockerfile_rev_proxy .`
-  - `> docker run -d -p 81:8080 --name rev_proxy reverse_proxy`
+  - `> docker run --net mynetwork -d -p 81:8080 --name rev_proxy reverse_proxy`
 5. **Utilize with docker compose:**
   - `> docker-compose build`
   - `> docker-compose up -d`
