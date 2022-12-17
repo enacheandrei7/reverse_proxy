@@ -22,9 +22,8 @@ The reverse proxy redirects the client's request to one of the available upstrea
 2. Enter the project:
   `> cd reverse_proxy`
 3. **For simple utilisation:**
-  `> python ./src/reverse_proxy.py
-   > python ./client_1/client1.py`
-  `> python ./client_1/client1.py`
-  `> python ./client_2/client2.py`
-  `> python ./client_3/client3.py`
+  - `> python ./src/reverse_proxy.py`
+  - `> python ./client_1/client1.py`
+  - `> python ./client_2/client2.py`
+  - `> python ./client_3/client3.py`
 4. 
