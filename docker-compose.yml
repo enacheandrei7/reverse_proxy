@@ -1,26 +1,49 @@
 version: "3.8"
 services:
   reverse-proxy:
+    image: reverse-proxy
     build:
       context: .
       dockerfile: Dockerfile_rev_proxy
     ports:
       - "81:8080"
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.5
   client-1:
+    image: upstream-service-a
     build:
       context: .
       dockerfile: Dockerfile_client_1
     ports:
       - "1111:9090"
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.2
   client-2:
+    image: upstream-service-b
     build:
       context: .
       dockerfile: Dockerfile_client_2
     ports:
       - "2222:9090"
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.3
   client-3:
+    image: upstream-service-c
     build:
       context: .
       dockerfile: Dockerfile_client_3
     ports:
       - "3333:9090"
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.4
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.19.0.0/16
+         gateway: 172.19.0.1

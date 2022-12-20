@@ -3,5 +3,5 @@ WORKDIR /client
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY client_1 client_1
-EXPOSE 9999
+EXPOSE 9090
 ENTRYPOINT ["python", "./client_1/client1.py"]

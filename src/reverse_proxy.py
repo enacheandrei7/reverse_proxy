@@ -10,7 +10,7 @@ import threading
 # HOST_NAME = socket.gethostname()
 # HOST_IP = socket.gethostbyname(HOST_NAME)
 
-CONFIG_PATH = "./src/config.yaml"
+CONFIG_PATH = "./config.yaml"
 
 
 def read_yaml(config_path):
@@ -134,6 +134,7 @@ class ReverseProxy(BaseHTTPRequestHandler):
                 s = requests.Session()
                 retry = Retry(total=retry_policy['retries'])
                 adapter = HTTPAdapter(max_retries=retry)
+                s.trust_env = False
                 s.mount('http://', adapter)
                 s.mount('https://', adapter)
 

@@ -1,10 +1,10 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import socket
 
-hostname = socket.gethostname()
-HOST = socket.gethostbyname(hostname)
+# hostname = socket.gethostname()
+# HOST = socket.gethostbyname(hostname)
 
-# HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 PORT = 9090
 ADDR = (HOST, PORT)
 
